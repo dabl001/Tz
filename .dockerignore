@@ -1,0 +1,15 @@
+# Не копировать Git-файлы
+.git
+.gitignore
+
+# IDE/Editor
+.vscode
+.idea
+
+# Сборочные артефакты
+main
+*.out
+
+# Кеши
+*.log
+.env

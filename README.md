@@ -92,17 +92,33 @@ go test ./internal/handler
 
 ### 📁 Структура
 
-cmd/server         → main.go (вход в приложение)
+WorkMate-Go/
 
-internal/model     → Task-модель
+├── cmd/server/main.go            # Точка входа (инициализация, запуск API)
 
-internal/task      → логика задач, менеджер, sample-задачи
+├── internal/
 
-internal/storage   → RedisStore, PostgresStore
+│   ├── model/                    # Структура данных Task
 
-internal/handler   → HTTP-эндпоинты
+│   ├── task/                     # Интерфейсы, TaskManager, SampleTask
 
-scripts/init.sql   → создание таблицы в PostgreSQL
+│   ├── storage/                  # RedisStore, PostgresStore
+
+│   └── handler/                 # HTTP-хендлеры (POST/GET задачи)
+
+├── scripts/init.sql              # SQL-таблица для completed_tasks
+
+├── .env.example                  # Шаблон конфигурации
+
+├── .gitignore                    # Исключённый .env
+
+├── Dockerfile                    # Сборка Go-приложения
+
+├── docker-compose.yml            # Redis + PostgreSQL + API
+
+├── Makefile                      # Быстрый запуск и тесты
+
+└── README.md                     # Полное описание проекта
 
 ---
 

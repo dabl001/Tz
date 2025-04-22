@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -20,8 +21,16 @@ func main() {
 	// Подключение к Redis
 	store := storage.NewRedisStore(redisAddr)
 
+	pgDSN := os.Getenv("POSTGRES_DSN")
+	db, err := sql.Open("postgres", pgDSN)
+	if err != nil {
+		log.Fatal("❌ Failed to connect to PostgreSQL:", err)
+	}
+
+	pgStore := storage.NewPostgresStore(db)
+
 	// Создаём менеджер задач
-	manager := task.NewManager(store)
+	manager := task.NewManager(store, pgStore)
 
 	// Инициализируем HTTP хендлер
 	h := &handler.TaskHandler{Manager: manager}

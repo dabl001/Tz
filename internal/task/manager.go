@@ -66,7 +66,7 @@ func (m *Manager) executeTask(ctx context.Context, task *model.Task, p Processor
 		log.Printf("✅ Task completed: %s, result: %s", task.ID, result)
 	}
 	task.UpdatedAt = time.Now()
-	if task.Status == model.StatusCompleted || task.Status == model.StatusFailed {
+	if (task.Status == model.StatusCompleted || task.Status == model.StatusFailed) && m.pg != nil {
 		err := m.pg.SaveCompletedTask(context.Background(), task, p.ID())
 		if err != nil {
 			log.Printf("⚠️ Failed to save completed task to Postgres: %v", err)

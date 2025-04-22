@@ -9,6 +9,8 @@ import (
 	"workmate-go/internal/handler"
 	"workmate-go/internal/storage"
 	"workmate-go/internal/task"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {

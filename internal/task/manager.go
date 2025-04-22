@@ -12,10 +12,14 @@ import (
 
 type Manager struct {
 	store storage.TaskStore
+	pg    *storage.PostgresStore
 }
 
-func NewManager(store storage.TaskStore) *Manager {
-	return &Manager{store: store}
+func NewManager(store storage.TaskStore, pg *storage.PostgresStore) *Manager {
+	return &Manager{
+		store: store,
+		pg:    pg,
+	}
 }
 
 func (m *Manager) Create(ctx context.Context, p Processor) (*model.Task, error) {
@@ -62,6 +66,15 @@ func (m *Manager) executeTask(ctx context.Context, task *model.Task, p Processor
 		log.Printf("✅ Task completed: %s, result: %s", task.ID, result)
 	}
 	task.UpdatedAt = time.Now()
+	if task.Status == model.StatusCompleted || task.Status == model.StatusFailed {
+		err := m.pg.SaveCompletedTask(context.Background(), task, p.ID())
+		if err != nil {
+			log.Printf("⚠️ Failed to save completed task to Postgres: %v", err)
+		} else {
+			log.Printf("📦 Task persisted to Postgres: %s", task.ID)
+		}
+	}
+
 	_ = m.store.SaveTask(ctx, task)
 }
 

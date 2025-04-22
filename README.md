@@ -26,10 +26,24 @@
 
 ## ⚙️ Установка и запуск
 
+1. Клонируй репозиторий:
+
+```bash
+git clone https://github.com/dabl001/WorkMate-Go.git
+cd WorkMate-Go
+```
+
+2. Создай .env из шаблона:
+
 ```bash
 cp .env.example .env
+```
+
+3. Собери и запусти проект:
+
+```bash
 docker-compose up --build
-``` 
+```
 
 По умолчанию:
 
@@ -39,35 +53,57 @@ docker-compose up --build
 
     PostgreSQL: localhost:5432
 
-🔌 API
+## 🔌 API
 POST /tasks
 
-Создать задачу:
+### Создать задачу:
 
-POST http://localhost:8080/tasks
+    POST http://localhost:8080/tasks
+
 Content-Type: application/json
 
 {
+
   "input": "your data"
+
 }
 
 GET /tasks?id=...
 
-Получить статус:
+### Получить статус:
 
-GET http://localhost:8080/tasks?id=task-id
+    GET http://localhost:8080/tasks?id=task-id
 
-🧪 Тесты
+```markdown
+### 🧪 Тесты
 
+Запуск всех тестов:
+
+```bash
 go test ./...
+```
 
-📁 Структура
+Запуск отдельных пакетов:
+
+```bash
+go test ./internal/task
+go test ./internal/storage
+go test ./internal/handler
+```
+```
+
+### 📁 Структура
 
 cmd/server         → main.go (вход в приложение)
+
 internal/model     → Task-модель
+
 internal/task      → логика задач, менеджер, sample-задачи
+
 internal/storage   → RedisStore, PostgresStore
+
 internal/handler   → HTTP-эндпоинты
+
 scripts/init.sql   → создание таблицы в PostgreSQL
 
 ---
@@ -89,4 +125,4 @@ scripts/init.sql   → создание таблицы в PostgreSQL
 
 👤 Автор
 
-Рабочее тестовое задание от dabl001
+Рабочее тестовое задание от Abylay Dauletkhan (dabl001)

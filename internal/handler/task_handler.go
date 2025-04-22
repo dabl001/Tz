@@ -22,7 +22,7 @@ func (h *TaskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newTask := task.NewSampleTask(req.Input, 5*time.Second)
+	newTask := task.NewSampleTask(req.Input, 30*time.Second) // we can make it wait!
 
 	t, err := h.Manager.Create(r.Context(), newTask)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 )
 
 type TaskHandler struct {
-	Manager *task.Manager
+	Manager task.TaskManager
 }
 
 type CreateTaskRequest struct {

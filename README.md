@@ -74,7 +74,6 @@ GET /tasks?id=...
 
     GET http://localhost:8080/tasks?id=task-id
 
-```markdown
 ### 🧪 Тесты
 
 Запуск всех тестов:
@@ -89,7 +88,6 @@ go test ./...
 go test ./internal/task
 go test ./internal/storage
 go test ./internal/handler
-```
 ```
 
 ### 📁 Структура

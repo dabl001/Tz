@@ -11,6 +11,7 @@ import (
 	"workmate-go/internal/task"
 
 	_ "github.com/lib/pq"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -47,6 +48,8 @@ func main() {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
+
+	http.Handle("/metrics", promhttp.Handler())
 
 	fmt.Println("🚀 Server started on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

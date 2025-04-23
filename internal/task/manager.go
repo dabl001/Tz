@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"time"
+	"workmate-go/internal/metrics"
 	"workmate-go/internal/model"
 	"workmate-go/internal/storage"
 
@@ -24,6 +25,7 @@ func NewManager(store storage.TaskStore, pg *storage.PostgresStore) *Manager {
 
 func (m *Manager) Create(ctx context.Context, p Processor) (*model.Task, error) {
 	id := uuid.NewString()
+	metrics.TaskCreated.WithLabelValues(p.ID()).Inc()
 
 	task := &model.Task{
 		ID:        id,
@@ -49,6 +51,7 @@ func (m *Manager) Create(ctx context.Context, p Processor) (*model.Task, error) 
 }
 
 func (m *Manager) executeTask(ctx context.Context, task *model.Task, p Processor) {
+	start := time.Now()
 	log.Printf("▶️ Executing task: %s", task.ID)
 
 	task.Status = model.StatusRunning
@@ -57,10 +60,12 @@ func (m *Manager) executeTask(ctx context.Context, task *model.Task, p Processor
 
 	result, err := p.Execute(ctx)
 	if err != nil {
+		metrics.TaskFailed.WithLabelValues(p.ID()).Inc()
 		task.Status = model.StatusFailed
 		task.Error = err.Error()
 		log.Printf("❌ Task failed: %s, error: %v", task.ID, err)
 	} else {
+		metrics.TaskCompleted.WithLabelValues(p.ID()).Inc()
 		task.Status = model.StatusCompleted
 		task.Result = result
 		log.Printf("✅ Task completed: %s, result: %s", task.ID, result)
@@ -76,6 +81,7 @@ func (m *Manager) executeTask(ctx context.Context, task *model.Task, p Processor
 	}
 
 	_ = m.store.SaveTask(ctx, task)
+	metrics.TaskDuration.WithLabelValues(p.ID()).Observe(time.Since(start).Seconds())
 }
 
 func (m *Manager) Get(ctx context.Context, id string) (*model.Task, error) {
